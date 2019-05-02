@@ -56,9 +56,9 @@ public class StoreMusic {
                     System.out.println("Genre : " + genre);
 //                    System.out.println("TrackStr"+trackStr);
 //                    System.out.println("Track"+track);
-                    System.out.println("Seconds"+seconds);
-                    System.out.println("minute"+minute); //4:4 ->실제 길이 4:23
-                    System.out.println("second"+second); //4:4 ->실제 길이 4:23
+                    System.out.println("Seconds : "+seconds);
+                    System.out.println("minute : "+minute); //4 ->실제 길이 4:23
+                    System.out.println("second : "+second); //23 ->실제 길이 4:23
                     
                 }catch(Exception ex){
                     ex.printStackTrace();

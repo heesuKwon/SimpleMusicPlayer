@@ -1,9 +1,10 @@
 package musicPlayer.model.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Member {
+public class Member implements Serializable{
 	private String name;
 	private String id;
 	private String password;
@@ -50,10 +51,10 @@ public class Member {
 	public void addPlayList(Music music) {
 		playList.add(music);
 	}
-	//곡삭제
-//	public void add
 	
-	//곡정렬
+	@Override
+	public String toString() {
+		return "id : "+id+", name : "+name; 
+	}
 	
-	//
 }
