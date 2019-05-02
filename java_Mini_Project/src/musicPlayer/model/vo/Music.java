@@ -1,6 +1,8 @@
 package musicPlayer.model.vo;
 
 public class Music {
+	private String path; //파일경로
+	private long code;	//고유번호
 	private String Title; //곡명
 	private String artist; //가수
 	private String genre; //장르
@@ -12,7 +14,9 @@ public class Music {
 		
 	}
 
-	public Music(String title, String artist, String genre, String openYear, int like, int seconds) {
+	public Music(String path, long code, String title, String artist, String genre, String openYear, int like, int seconds) {
+		this.path = path;
+		this.code = code;
 		this.Title = title;
 		this.artist = artist;
 		this.genre = genre;
@@ -20,6 +24,7 @@ public class Music {
 		this.like = like;
 		this.seconds = seconds;
 	}
+	
 	
 
 	public String getTitle() {
@@ -68,6 +73,22 @@ public class Music {
 
 	public void setSeconds(int seconds) {
 		this.seconds = seconds;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public long getCode() {
+		return code;
+	}
+
+	public void setCode(long code) {
+		this.code = code;
 	}
 	
 }

@@ -13,6 +13,7 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 public class StoreMusic {
 	
 	private List<Music> allMusic = new ArrayList<>();
+	long code = 0;
 	
 	public StoreMusic(String path) {
 		File fs = new File(path);
@@ -44,8 +45,8 @@ public class StoreMusic {
                     int second = seconds%60;
                     
              
-                    //public Music(String title, String artist, String genre, Date openDate, int like, int seconds);
-                    Music music = new Music(title, artist, genre, year, 0, seconds);
+                    //public Music(String path, long code, String title, String artist, String genre, String openYear, int like, int seconds);
+                    Music music = new Music(f.toString(), code++, title, artist, genre, year, 0, seconds);
                     allMusic.add(music);
                     
                     System.out.println("Tag : " + tag2);

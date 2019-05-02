@@ -20,7 +20,7 @@ public class MemberController {
 	 * @param fileName
 	 * @return
 	 */
-	public boolean saveSurvey(Member m, String fileName){
+	public boolean saveMember(Member m, String fileName){
 		try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));){
 			oos.writeObject(m);
 			
@@ -36,7 +36,7 @@ public class MemberController {
 	 * @param fileName
 	 * @return
 	 */
-	public Member loadSurvey(String fileName){
+	public Member loadMember(String fileName){
 		Member vo = null;
 		try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fileName)));){
 			vo = (Member)ois.readObject();
