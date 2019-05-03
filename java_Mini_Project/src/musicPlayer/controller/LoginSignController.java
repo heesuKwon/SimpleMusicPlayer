@@ -17,8 +17,12 @@ public class LoginSignController {
 	private boolean signOk=false;//회원가입 가능여부 최종확인
 	private boolean idCheck=false;//아이디중복체크
 	private String id="";//중복확인 후 id값
+	private Member m;//로그인에 성공한 회원정보
 		
-	
+	public Member getMember() {
+		return m;
+	}
+
 	//아이디 체크
 	public String idCheck(String id) {
 		String returnId="";
@@ -67,17 +71,14 @@ public class LoginSignController {
 		}else if(password.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "비밀번호를 입력해주세요");
 		}else {
-			FileReader fr=null;
-			BufferedReader br=null;
 			String line="";
-			try {
-				fr=new FileReader("MemberInfo.txt");
-				br=new BufferedReader(fr);
+			try (BufferedReader br = new BufferedReader(new FileReader("MemberInfo.txt"))){				
 				while((line=br.readLine())!=null) {
 					String[] str=line.split(",");
 					if(str[1].equals(id)&&str[2].equals(password)) {
 						loginOk=true;
 						JOptionPane.showMessageDialog(null, "로그인 되셨습니다.");
+						m = new Member(str[0],str[1],str[2]);
 						break;
 					}	
 				}
@@ -85,15 +86,7 @@ public class LoginSignController {
 					JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 확인해주세요");					
 				}
 			} catch (IOException e) {
-
 				e.printStackTrace();
-			}finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
 			}
 		}
 	}

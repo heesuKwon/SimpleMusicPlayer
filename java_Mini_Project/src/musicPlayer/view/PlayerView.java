@@ -41,6 +41,7 @@ public class PlayerView{
 		addRootPanel();
 		addLoginPanel();
 		addChartPanel();
+//		addCenterPanel();
 		
 		f.add(rootPanel);
 		f.setVisible(true);
@@ -103,6 +104,9 @@ public class PlayerView{
 			lsc=new LoginSignController();
 			if(e.getSource() == btnLogin) {		
 				lsc.loginCheck(textFieldId.getText(),new String(pwFieldPassword.getPassword()).toString());
+				if((lsc.getMember().getId()).equals("admin")){
+					new MusicManagerView();
+				}
 			}
 			else if(e.getSource() == btnJoinM) {
 				new SignView();
@@ -116,4 +120,11 @@ public class PlayerView{
 		rootPanel.add(loginPanel);
 	}
 
+	private void addCenterPanel() {
+		//사용자
+		//관리자
+		if((lsc.getMember().getId()).equals("admin")){
+			new MusicManagerView();
+		}
+	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import musicPlayer.controller.PlayerController;
 import musicPlayer.model.vo.Music;
 import musicPlayer.model.vo.Administrator;
+import musicPlayer.view.MusicManagerView;
 import musicPlayer.view.PlayerView;
 
 public class MusicPlayerRun {
@@ -12,9 +13,11 @@ public class MusicPlayerRun {
 
 	public static void main(String[] args) {
 //		StoreMusic sm = new StoreMusic("C:\\Workspaces\\java_workspace\\java_Mini_Project\\musics");
-		Administrator sm = new Administrator("musics");
+//		Administrator sm = new Administrator("musics");
+		Administrator sm = new Administrator();		
 		allMusic = sm.getAllMusic();
 		new PlayerView(new PlayerController());
+		new MusicManagerView();
 	}
 
 }
