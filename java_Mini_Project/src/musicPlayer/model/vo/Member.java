@@ -8,7 +8,7 @@ public class Member implements Serializable{
 	private String name;
 	private String id;
 	private String password;
-	private List<Music> playList;
+//	private List<Music> playList;
 	
 	public Member() {
 	}
@@ -17,7 +17,7 @@ public class Member implements Serializable{
 		this.name = name;
 		this.id = id;
 		this.password = password;
-		playList = new ArrayList<>();
+//		playList = new ArrayList<>();
 	}//회원 가입시 사용
 
 	public String getName() {
@@ -44,13 +44,13 @@ public class Member implements Serializable{
 		this.password = password;
 	}
 
-	public List<Music> getPlayList() {
-		return playList;
-	}
-
-	public void addPlayList(Music music) {
-		playList.add(music);
-	}
+//	public List<Music> getPlayList() {
+//		return playList;
+//	}
+//
+//	public void addPlayList(Music music) {
+//		playList.add(music);
+//	}
 	
 	@Override
 	public String toString() {

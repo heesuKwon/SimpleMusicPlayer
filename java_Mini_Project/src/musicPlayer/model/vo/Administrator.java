@@ -1,6 +1,9 @@
 package musicPlayer.model.vo;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 public class Administrator {
 	
 	private List<Music> allMusic = new ArrayList<>();
+	private List<Member> mList = new ArrayList<>();
 	long code = 0;
 	
 	public Administrator(String path) {
@@ -65,6 +69,22 @@ public class Administrator {
                     ex.printStackTrace();
                 }
 			}
+		}
+	}
+	
+	//회원정보출력 -> 나중에 뷰로 수정 필요
+	public void MemberListInfo() {
+		String filePath = "MemberInfo.txt";
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath));){
+			String line = null;
+			while((line=br.readLine())!=null) {
+				String[] str=line.split(",");
+				mList.add(new Member(str[0],str[1],str[2]));
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

@@ -3,7 +3,6 @@ package musicPlayer.view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,20 +11,16 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-
+import musicPlayer.controller.LoginSignController;
 import musicPlayer.controller.MemberController;
 import musicPlayer.controller.PlayerController;
 import musicPlayer.model.vo.Member;
-import musicPlayer.model.vo.Music;
 
 
 public class PlayerView{
 	private PlayerController pc;
 	private MemberController mc = new MemberController();
+	private LoginSignController lsc;
 	private Member m;
 	
 	//컨테이너모음
@@ -99,59 +94,26 @@ public class PlayerView{
 		loginPanel.add(btnJoinM);
 
 		rootPanel.add(loginPanel);
+		
 	}
 	
 	private class LoginActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//로그인 버튼을 눌렀을 때
-			if(e.getSource() == btnLogin) {
-				String id = textFieldId.getText();
-				//로그인시 회원정보 파일을 가져와서 그 안의 파일 이름과 id를 비교하여 있으면 id존재
-				//id가 이름인 파일을 member변수에 넣어서 비밀번호가 입력한 값과 같은지 확인
-				File fs = new File("Members");
-				if(fs.isDirectory()) {
-					File list[] = fs.listFiles();
-					boolean flag = true;
-					for(File f : list) {
-						String filename = f.toString();
-						System.out.println(filename);
-						try{
-							m = mc.loadMember(f.toString());
-							//파일명과 id가 같으면 password 검사
-							if(filename.equals(id)) {
-								flag = false;
-								String pw = pwFieldPassword.getPassword().toString();
-								if(m.getPassword().equals(pw)) {
-									System.out.println("로그인에 성공하셨습니다.");
-								}
-								
-							}
-		                    
-		                }catch(Exception ex){
-		                    ex.printStackTrace();
-		                }
-					}
-					//회원정보를 못찾으면
-					if(flag) {
-						System.out.println("회원정보가 없습니다.");
-					}
-				}
-				//회원정보가 하나도 없으면
-				else {
-					System.out.println("회원정보 폴더가 비어있습니다.");
-				}
+			lsc=new LoginSignController();
+			if(e.getSource() == btnLogin) {		
+				lsc.loginCheck(textFieldId.getText(),new String(pwFieldPassword.getPassword()).toString());
 			}
-			//회언가입 버튼을 눌렀을 때
 			else if(e.getSource() == btnJoinM) {
-				//회원가입 창 팝업 
-				//-> 가입하기 누르면 membercontroller로 넘어가서 회원정보 저장 
+				new SignView();
 			}
 		}
 	}
 	
 	private void addChartPanel() {
+		loginPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.black);
 		
+		rootPanel.add(loginPanel);
 	}
 
 }
