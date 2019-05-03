@@ -17,7 +17,8 @@ import javax.swing.JTextArea;
 import musicPlayer.model.vo.Music;
 
 public class MusicSearch extends JFrame{
-	Scanner sc = new Scanner(System.in);
+	
+	/*Scanner sc = new Scanner(System.in);
 	//Music 클래스에서 가져옴
 	private List<Music> mList = new ArrayList<>();
 	//{"파일경로", 고유번호, "곡명", "가수", "장르", "발매년도", 좋아요수, 재생시간(분)}
@@ -117,7 +118,7 @@ public class MusicSearch extends JFrame{
 	 * (곡명으로 검색해서 해당곡이 있다면, 곡 정보(제목/가수)를 출력하고,
 	 * 없다면, "검색결과가 없습니다" 출력
 	 */
-	public void searchTitle() {
+	/*public void searchTitle() {
 		//찾는 곡이 존재하는지 여부를 담을 변수
 		boolean flag = false;
 		//1. 검색할 곡명 입력받기
@@ -150,5 +151,6 @@ public class MusicSearch extends JFrame{
 //		ms.searchAlbum();//앨범명으로 검색 메소드
 //		ms.searchGenre();//장르별로 검색 메소드
 	}//end of main
+	*/
 
 };//end of class
