@@ -1,6 +1,8 @@
 package musicPlayer.model.vo;
 
-public class Music {
+import java.io.Serializable;
+
+public class Music implements Serializable{
 	private String path; //파일경로
 	private long code;	//고유번호
 	private String Title; //곡명
@@ -9,6 +11,7 @@ public class Music {
 	private String openYear; //발매년도
 	private int like; //좋아요수
 	private int seconds; //재생시간(분)
+//	private String image; //사진 이미지
 	
 	public Music() {
 		
@@ -23,9 +26,14 @@ public class Music {
 		this.openYear = openYear;
 		this.like = like;
 		this.seconds = seconds;
+//		this.image = image;
 	}
 	
-	
+	@Override
+	public String toString(){
+		return "["+path+","+code+","+Title+","+artist+","+genre+","+
+				openYear+","+like+","+seconds+"]";
+	}
 
 	public String getTitle() {
 		return Title;

@@ -1,5 +1,7 @@
 package musicPlayer.view;
 
+import java.awt.FlowLayout;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 

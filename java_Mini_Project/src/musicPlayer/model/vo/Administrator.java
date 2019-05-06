@@ -13,52 +13,27 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
+import musicPlayer.controller.IOController;
+import musicPlayer.controller.LoginSignController;
+
 public class Administrator {
-	
-	private List<Music> allMusic = new ArrayList<>();
+	private List<Music> allMusic;
 	private List<Member> memberList = new ArrayList<>();
+	private IOController ioc = new IOController();
 	long code = 0;
 	
-	public Administrator() {
-//		File fs = new File(path);
-//		if(fs.isDirectory()) {
-//			File list[] = fs.listFiles();			
-//			for(File f : list) {
-//				try{
-//                    MP3File mp3 = (MP3File) AudioFileIO.read(f);
-//                    AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
-//                    
-//                    Tag tag = mp3.getTag();
-//                    String title = tag.getFirst(FieldKey.TITLE);
-//                    String artist = tag.getFirst(FieldKey.ARTIST);
-//                    String album = tag.getFirst(FieldKey.ALBUM);
-//                    String year = tag.getFirst(FieldKey.YEAR);
-//                    String genre = tag.getFirst(FieldKey.GENRE);
-////                    Integer seconds = mp3.getAudioHeader().getTrackLength() + 1;//+1은 왜한거지?
-//                    Integer seconds = mp3.getAudioHeader().getTrackLength();//+1은 왜한거지?
-//                    int minute = seconds/60;
-//                    int second = seconds%60;
-//                    
-//             
-//                    //public Music(String path, long code, String title, String artist, String genre, String openYear, int like, int seconds);
-//                    Music music = new Music(f.toString(), code++, title, artist, genre, year, 0, seconds);
-//                    allMusic.add(music);
-//                    
-//                    System.out.println("Tag : " + tag2);
-//                    System.out.println("Song Name : " + title);
-//                    System.out.println("Artist : " + artist);
-//                    System.out.println("Album : " + album);
-//                    System.out.println("Year : " + year);
-//                    System.out.println("Genre : " + genre);
-//                    System.out.println("Seconds : "+seconds);
-//                    System.out.println("minute : "+minute); //4 ->실제 길이 4:23
-//                    System.out.println("second : "+second); //23 ->실제 길이 4:23
-//                    
-//                }catch(Exception ex){
-//                    ex.printStackTrace();
-//                }
-//			}
-//		}
+	public Administrator(){
+		allMusic = (List)ioc.loadList("Music");
+		//음악 파일이 비어있지 않으면
+		if(allMusic != null){
+			System.out.println(allMusic.size());
+			code = allMusic.size();
+		}
+		//음악 파일이 비어있으면
+		else{
+			allMusic = new ArrayList<>();
+		}
+		memberList = new LoginSignController().getMemberList();
 	}
 	
 	//회원정보출력 -> 나중에 뷰로 수정 필요
@@ -77,9 +52,8 @@ public class Administrator {
 		}
 	}
 	
+	//음악 한곡씩 추가
 	public void addMusic(File f) {
-//		String path = "";
-//		File f = new File(path);
 		
 		try{
             MP3File mp3 = (MP3File) AudioFileIO.read(f);
@@ -91,7 +65,7 @@ public class Administrator {
             String album = tag.getFirst(FieldKey.ALBUM);
             String year = tag.getFirst(FieldKey.YEAR);
             String genre = tag.getFirst(FieldKey.GENRE);
-//            Integer seconds = mp3.getAudioHeader().getTrackLength() + 1;//+1은 왜한거지?
+            String image = tag.getFirst(FieldKey.COVER_ART);
             Integer seconds = mp3.getAudioHeader().getTrackLength();
             int minute = seconds/60;
             int second = seconds%60;
@@ -99,17 +73,23 @@ public class Administrator {
      
             //public Music(String path, long code, String title, String artist, String genre, String openYear, int like, int seconds);
             Music music = new Music(f.toString(), code++, title, artist, genre, year, 0, seconds);
-            allMusic.add(music);
+            if(!allMusic.contains(music)){//같으면 안들어가게 하고 싶은데... 코드번호가 달라서 인지 상관없이 들어감...ㅠ
+            	allMusic.add(music);
+            }
+            System.out.println(music);
             
-            System.out.println("Tag : " + tag2);
-            System.out.println("Song Name : " + title);
-            System.out.println("Artist : " + artist);
-            System.out.println("Album : " + album);
-            System.out.println("Year : " + year);
-            System.out.println("Genre : " + genre);
-            System.out.println("Seconds : "+seconds);
-            System.out.println("minute : "+minute); //4 ->실제 길이 4:23
-            System.out.println("second : "+second); //23 ->실제 길이 4:23
+            ioc.saveList(allMusic, "Music");
+            
+//            System.out.println("Tag : " + tag2);
+//            System.out.println("Song Name : " + title);
+//            System.out.println("Artist : " + artist);
+//            System.out.println("Album : " + album);
+//            System.out.println("Year : " + year);
+//            System.out.println("Genre : " + genre);
+//            System.out.println("Seconds : "+seconds);
+//            System.out.println("minute : "+minute); //4 ->실제 길이 4:23
+//            System.out.println("second : "+second); //23 ->실제 길이 4:23
+//            System.out.println("image : "+image);
             
         }catch(Exception ex){
             ex.printStackTrace();
@@ -120,6 +100,7 @@ public class Administrator {
 		
 	}
 	
+	//모든 음악 가져오기
 	public List<Music> getAllMusic(){
 		return allMusic;
 	}
@@ -129,4 +110,5 @@ public class Administrator {
 			System.out.println(allMusic.get(i).getTitle());
 		}
 	}
+
 }

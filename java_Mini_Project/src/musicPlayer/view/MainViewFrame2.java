@@ -30,7 +30,7 @@ import musicPlayer.model.vo.Member;
 import musicPlayer.model.vo.Music;
 
 
-public class MainViewFrame{
+public class MainViewFrame2{
 	private PlayerController pc;
 	private IOController mc = new IOController();
 	private LoginSignController lsc;
@@ -44,10 +44,10 @@ public class MainViewFrame{
 
 	//컨테이너모음
 	private JFrame f;
-//	private JPanel rootPanel;
+	private JPanel rootPanel;
 	private JPanel loginPanel;
 	private JPanel chartPanel; //인기차트 
-//	private JPanel adminPanel; //관리자 로그인 후 화면
+	private JPanel adminPanel; //관리자 로그인 후 화면
 	private JPanel memberPanel; //회원 로그인 후 화면
 
 
@@ -58,15 +58,15 @@ public class MainViewFrame{
 	private JButton btnJoinM;
 	private JButton btnLogout;
 
-	public MainViewFrame(PlayerController pc) {	
+	public MainViewFrame2(PlayerController pc) {	
 		this.pc = pc;
 
 		configureFrame();//프레임설정(size, location, title등)
-//		addRootPanel();
+		addRootPanel();
 		addLoginPanel();
-//		addChartPanel();
+		addChartPanel();
 
-//		f.add(rootPanel);
+		f.add(rootPanel);
 		f.setVisible(true);
 
 	}
@@ -74,87 +74,79 @@ public class MainViewFrame{
 	private void configureFrame() {
 
 		//int x, int y, int width, int height)
-//		f = new MyFrame(400, 100, 900, 500);
-		
-		//MyFrame(int x,int y, int width, int height, boolean resizable, String title, String icon)
-		f = new MyFrame(400, 100, 900, 500, false, "MusicPlayer", null);
+		f = new MyFrame(400, 100, 900, 500);
 	}
 
 	private void addRootPanel() {
 
-//		//(int x, int y, int width, int height, String borderTitle, Color borderColor, Color bgColor, LayoutManager mgr)
-//		rootPanel = new MyPanel(0, 0, 900, 500, null, null, Color.LIGHT_GRAY);
-//		rootPanel.setLayout(null); //기본 LayoutManger인 FlowLayout이 아니라 null로 함. 즉 좌표값으로 배치하겠다.
+		//(int x, int y, int width, int height, String borderTitle, Color borderColor, Color bgColor, LayoutManager mgr)
+		rootPanel = new MyPanel(0, 0, 900, 500, null, null, Color.LIGHT_GRAY);
+		rootPanel.setLayout(null); //기본 LayoutManger인 FlowLayout이 아니라 null로 함. 즉 좌표값으로 배치하겠다.
 	}
 
 	private void addLoginPanel() {
-		loginPanel = new loginPanel(f);
 
-//		loginPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);
-//		loginPanel.setLayout(null);
-//
-//		JLabel id = new JLabel("ID: ",JLabel.RIGHT);
-//		JLabel password = new JLabel("비밀번호: ",JLabel.RIGHT);
-//		textFieldId = new JTextField(10);
-//		pwFieldPassword = new JPasswordField(10);
-//
-//		id.setBounds(30, 160, 80, 30);
-//		textFieldId.setBounds(110, 160, 100, 30);
-//		password.setBounds(30, 200, 80, 30); //y좌표 +40
-//		pwFieldPassword.setBounds(110, 200, 100, 30);
-//
-//		loginPanel.add(id);
-//		loginPanel.add(textFieldId);
-//		loginPanel.add(password);
-//		loginPanel.add(pwFieldPassword);
-//
-//		btnLogin = new JButton("로그인");
-//		btnJoinM = new JButton("회원가입");
-//		btnLogin.setBounds(60, 240, 80, 30);
-//		btnJoinM.setBounds(150, 240, 90, 30);
-//
-//		//이벤트리스너등록
-//		LoginActionListener listener = new LoginActionListener();
-//		btnLogin.addActionListener(listener);
-//		btnJoinM.addActionListener(listener);
-//
-//		loginPanel.add(btnLogin);
-//		loginPanel.add(btnJoinM);
-//
-////		rootPanel.add(loginPanel);
-//		f.add(loginPanel);
+		loginPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);
+		loginPanel.setLayout(null);
+
+		JLabel id = new JLabel("ID: ",JLabel.RIGHT);
+		JLabel password = new JLabel("비밀번호: ",JLabel.RIGHT);
+		textFieldId = new JTextField(10);
+		pwFieldPassword = new JPasswordField(10);
+
+		id.setBounds(30, 160, 80, 30);
+		textFieldId.setBounds(110, 160, 100, 30);
+		password.setBounds(30, 200, 80, 30); //y좌표 +40
+		pwFieldPassword.setBounds(110, 200, 100, 30);
+
+		loginPanel.add(id);
+		loginPanel.add(textFieldId);
+		loginPanel.add(password);
+		loginPanel.add(pwFieldPassword);
+
+		btnLogin = new JButton("로그인");
+		btnJoinM = new JButton("회원가입");
+		btnLogin.setBounds(60, 240, 80, 30);
+		btnJoinM.setBounds(150, 240, 90, 30);
+
+		//이벤트리스너등록
+		LoginActionListener listener = new LoginActionListener();
+		btnLogin.addActionListener(listener);
+		btnJoinM.addActionListener(listener);
+
+		loginPanel.add(btnLogin);
+		loginPanel.add(btnJoinM);
+
+		rootPanel.add(loginPanel);
+
 	}
-//
-//	private class LoginActionListener implements ActionListener{
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			lsc=new LoginSignController();
-//			//로그인 버튼 클릭시
-//			if(e.getSource() == btnLogin) {		
-//				m = lsc.loginCheck(textFieldId.getText(),new String(pwFieldPassword.getPassword()).toString());
-//				if(m.getId().equals("admin")) {
-//					addAdminPanel();
-//					//패널변경
-//					//this는 MouseAdapter클래스를 가리키기 때문에 MainPanel.this를 해줘야 함.
-//					MyUtil.changePanel(f, loginPanel, adminPanel);
-////					loginPanel.setVisible(false);								
-//					new MusicManagerView();
-//				}
-//				else {
-//					loginPanel.setVisible(false);
-//					addMemberPanel();
-//				}
-//			}
-//			//회원가입 버튼 클릭시
-//			else if(e.getSource() == btnJoinM) {
-//				new SignView();
-//			}
-//			//로그아웃 버튼 클릭시
-//			else if(e.getSource() == btnLogout){
-//				loginPanel.setVisible(true);
-//			}
-//		}
-//	}
+
+	private class LoginActionListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			lsc=new LoginSignController();
+			//로그인 버튼 클릭시
+			if(e.getSource() == btnLogin) {		
+				m = lsc.loginCheck(textFieldId.getText(),new String(pwFieldPassword.getPassword()).toString());
+				if(m.getId().equals("admin")) {
+					//패널변경
+					//this는 MouseAdapter클래스를 가리키기 때문에 MainPanel.this를 해줘야 함.
+//					MyUtil.changePanel(rootPanel, loginPanel, adminPanel);
+					loginPanel.setVisible(false);								
+					addAdminPanel();
+					
+				}
+				else {
+					loginPanel.setVisible(false);
+					addMemberPanel();
+				}
+			}
+			//회원가입 버튼 클릭시
+			else if(e.getSource() == btnJoinM) {
+				new SignView();
+			}
+		}
+	}
 
 	//음악 차트 패널
 	public void addChartPanel() {
@@ -194,8 +186,7 @@ public class MainViewFrame{
 		//JTable 스크롤 기능
 		JScrollPane scr=new JScrollPane(chartTable);
 		chartPanel.add(scr);
-//		rootPanel.add(chartPanel);
-		f.add(chartPanel);
+		rootPanel.add(chartPanel);
 	}
 	//좋아요 클릭 기능 + 좋아요 순서 내림차순 기능
 	public void like(int row, int column) {
@@ -217,22 +208,46 @@ public class MainViewFrame{
 	}
 
 	//관리자 페이지 패널
-//	private void addAdminPanel() {
-//		adminPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);		
-//		JLabel idLabel=new JLabel();
-//		idLabel.setText(m.getName()+"님 환영합니다.");	
-//		adminPanel.add(idLabel);
-//		
-//		//로그아웃 버튼
-//		btnLogout = new JButton("로그아웃");
-//		//이벤트리스너 연결
-////		LoginActionListener listener = new LoginActionListener();
-////		btnLogout.addActionListener(listener);
-//		adminPanel.add(btnLogout);
-//		
-////		rootPanel.add(adminPanel);
-//		f.add(adminPanel);
-//	}
+	private void addAdminPanel() {
+		adminPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);		
+		JLabel idLabel=new JLabel();
+		idLabel.setText(m.getName()+"님 환영합니다.");	
+		adminPanel.add(idLabel);
+		
+		//로그아웃 버튼
+		btnLogout = new JButton("로그아웃");
+		//이벤트리스너 연결
+		btnLogout.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == btnLogout){
+					adminPanel.setVisible(false);
+					addLoginPanel();
+				}
+			}
+		});
+		adminPanel.add(btnLogout);
+		
+		JButton btnAddMusic = new JButton("곡 추가");
+		btnAddMusic.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new MusicManagerView();
+			}
+		});
+		adminPanel.add(btnAddMusic);
+		
+		JButton btnManageMember = new JButton("멤버 관리");
+		btnManageMember.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new MemberManagerView(lsc.getMemberList());
+			}
+		});
+		adminPanel.add(btnManageMember);
+		
+		rootPanel.add(adminPanel);
+	}
 	//회원 페이지 패널
 	private void addMemberPanel() {
 		memberPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);		
@@ -243,14 +258,21 @@ public class MainViewFrame{
 		//로그아웃 버튼
 		btnLogout = new JButton("로그아웃");
 		//이벤트리스너 연결
-//		LoginActionListener listener = new LoginActionListener();
-//		btnLogout.addActionListener(listener);
+		btnLogout.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == btnLogout){
+					memberPanel.setVisible(false);
+					addLoginPanel();
+				}
+			}
+		});
 		memberPanel.add(btnLogout);
 		
-//		rootPanel.add(memberPanel);
-		f.add(memberPanel);
+		rootPanel.add(memberPanel);
 	}
 }
+/*
 //JTable에 JButton 넣는 기능 클래스
 class JTableButtonRenderer implements TableCellRenderer {        
 	@Override 
@@ -268,3 +290,4 @@ class descendingByLike implements Comparator<Music>{
 	}
 
 }
+*/

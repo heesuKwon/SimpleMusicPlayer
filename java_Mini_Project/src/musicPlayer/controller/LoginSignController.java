@@ -1,26 +1,32 @@
 package musicPlayer.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import musicPlayer.model.vo.Member;
 
 public class LoginSignController {
-//	private List<Member> mList = new ArrayList<>();
+	private List<Member> mList = new ArrayList<>();
+	private IOController ioc = new IOController();
 
 	private boolean loginOk=false;//로그인ok 
 	private boolean signOk=false;//회원가입 가능여부 최종확인
 	private boolean idCheck=false;//아이디중복체크
 	private String id="";//중복확인 후 id값
 	private Member m;//로그인에 성공한 회원정보
+	
+	public LoginSignController(){
+		mList = (List)ioc.loadList("Member");
+		//음악 파일이 비어있으면
+		if(mList == null){
+			mList = new ArrayList<>();
+		}
+	}
 		
-	public Member getMember() {
-		return m;
+	public List<Member> getMemberList() {
+		return mList;
 	}
 
 	//아이디 체크
@@ -30,66 +36,48 @@ public class LoginSignController {
 			JOptionPane.showMessageDialog(null, "아이디를 입력해주세요");
 		}
 		else {
-			String filePath="MemberInfo.txt";
-//			Member m = null;
-			String line = "";
-
-			try (BufferedReader br = new BufferedReader(new FileReader(filePath))){		
-//			try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filePath)));){
-//				m = (Member)ois.readObject();
-				
-				while((line=br.readLine())!=null) {
-
-					String[] str=line.split(",");
-					if((str[1]).equals(id)) {
-						JOptionPane.showMessageDialog(null, "중복된 아이디 입니다.");				
-						idCheck=true;
-						signOk=false;
-						break;
-					}
+			for(Member m : mList){
+				if((m.getId()).equals(id)) {
+					JOptionPane.showMessageDialog(null, "중복된 아이디 입니다.");				
+					idCheck=true;
+					signOk=false;
+					break;
 				}
-				if(idCheck==false) {
-					JOptionPane.showMessageDialog(null, "사용가능한 아이디 입니다.");
-					this.id=id;
-					returnId=id;
-					signOk=true;
-
-				}
-				idCheck=false;
-
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+			if(idCheck==false) {
+				JOptionPane.showMessageDialog(null, "사용가능한 아이디 입니다.");
+				this.id=id;
+				returnId=id;
+				signOk=true;
+			}
+			idCheck=false;
 		}
 		return returnId;
 	}
 	
 	//로그인 체크
-	public void loginCheck(String id,String password) {
-		if(id.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "아이디를 입력해주세요");
-		}else if(password.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "비밀번호를 입력해주세요");
-		}else {
-			String line="";
-			try (BufferedReader br = new BufferedReader(new FileReader("MemberInfo.txt"))){				
-				while((line=br.readLine())!=null) {
-					String[] str=line.split(",");
-					if(str[1].equals(id)&&str[2].equals(password)) {
-						loginOk=true;
-						JOptionPane.showMessageDialog(null, "로그인 되셨습니다.");
-						m = new Member(str[0],str[1],str[2]);
-						break;
-					}	
-				}
-				if(loginOk==false) {
-					JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 확인해주세요");					
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    public Member loginCheck(String id,String password) {
+        Member loginM = null;
+        if(id.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "아이디를 입력해주세요");
+        }else if(password.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "비밀번호를 입력해주세요");
+        }else {
+        	for(Member m : mList){
+        		if(m.getId().equals(id)&&m.getPassword().equals(password)) {
+        			loginOk=true;
+        			JOptionPane.showMessageDialog(null, "로그인 되셨습니다.");
+        			loginM=m;
+        			break;
+        		}   
+        	}
+        	if(loginOk==false) {
+        		JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 확인해주세요");                   
+        	}
+
+        }
+        return loginM;
+    }
 	
 	//회원가입 체크
 	public boolean signCheck(String textName,String textId,String textPwd,String textPwd_) {
@@ -117,8 +105,7 @@ public class LoginSignController {
 			signOk=false;
 			msg="아이디 중복체크 해주세요";
 			id="";
-		}
-		
+		}		
 		if(signOk==true) {
 			signOk(textName,textId,textPwd);
 			JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다");
@@ -132,27 +119,8 @@ public class LoginSignController {
 	//회원가입 체크 완료하면 실행
 	//회원정보 저장
 	public void signOk(String name, String id, String password) {
-		String filePath="MemberInfo.txt";
 		Member m = new Member(name, id, password);
-//		mList.add(m);
-		/*try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filePath)));){
-			oos.writeObject(m+"\n");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} */
-		
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath,true));
-				BufferedReader br = new BufferedReader(new FileReader(filePath))){		
-			
-			if(br.readLine()==null) {
-				bw.write(name+","+id+","+password);	
-			}else {
-				bw.write("\n"+name+","+id+","+password);
-			}
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}		
+		mList.add(m);
+		ioc.saveList(mList, "Member");		
 	}
 }
