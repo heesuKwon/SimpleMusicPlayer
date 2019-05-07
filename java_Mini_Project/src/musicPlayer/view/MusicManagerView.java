@@ -1,5 +1,6 @@
 package musicPlayer.view;
 
+import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -18,92 +19,114 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.TransferHandler;
 
-import musicPlayer.model.vo.Administrator;
+import musicPlayer.controller.MusicManager;
 
 public class MusicManagerView extends JFrame implements DropTargetListener{
 
-	Administrator admin = new Administrator();
+	private MusicManager MusicM = new MusicManager();
 	
 	private static final long serialVersionUID = -361325089091244347L; 
 	private DefaultListModel<File> listModel = new DefaultListModel<>(); 
-	@SuppressWarnings("unused") 
+	@SuppressWarnings("unused")
 	private DropTarget dropTarget; 
-	private JLabel jLabel1; 
-	private JScrollPane jScrollPane1; 
+	private JFileChooser fileChooser = new JFileChooser();
+	
+	private JPanel jPanel1; //열기 패널
+	private JPanel jPanel2; //저장/취소 패널
+	private JScrollPane jScrollPane1; //가운데 file 추가 화면
 	private JList<File> list;
 	
-	private List<File> files = new ArrayList<File>();
-	
-	private JMenu Mfile = new JMenu("File");
+	private static List<File> mList = new ArrayList<File>();
 	
 	//이벤트 컴포넌트
 	private JButton btnSave;//저장버튼
 	private JButton btnCancel;//취소버튼
+
+	private JButton btnOpen;
 	
 
 	public MusicManagerView() {	
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initComponents(); 
 		dropTarget = new DropTarget(list, this); 
 		list.setModel(listModel); 
 		list.setDragEnabled(true); 
 		list.setTransferHandler(new FileTransferHandler()); 
+		
 	}
 
 	private void initComponents() { 
-		java.awt.GridBagConstraints gridBagConstraints; 
-		jLabel1 = new JLabel(); 
 		jScrollPane1 = new JScrollPane(); 
 		list = new JList<>(); 
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE); 
-		getContentPane().setLayout(new java.awt.GridBagLayout()); 
-		jLabel1.setText("Files:"); 
-		gridBagConstraints = new java.awt.GridBagConstraints(); 
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER; 
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST; 
-		getContentPane().add(jLabel1, gridBagConstraints); 
-		jScrollPane1.setViewportView(list); 
-		gridBagConstraints = new java.awt.GridBagConstraints(); 
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER; 
-		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL; 
-		getContentPane().add(jScrollPane1, gridBagConstraints); 
+		setLayout(null);
+		setTitle("곡 추가");
+		setSize(315,250);
+		
+		//위 패널
+		jPanel1 = new JPanel();
+		jPanel1.setBounds(0, 0, 300, 35);
+		JLabel jLabel1 = new JLabel("Files");
+		jPanel1.add(jLabel1);
+		btnOpen = new JButton("열기");
+		btnOpen.setSize(40, 30);
+		jPanel1.add(btnOpen);
+
+		add(jPanel1, BorderLayout.NORTH); 
+		
+		//file 넣는 공간
+		jScrollPane1.setBounds(0, 40, 300, 130);
+		jScrollPane1.setViewportView(list); 		
+		add(jScrollPane1, BorderLayout.CENTER);
+		
+		//아래패널
+		jPanel2 = new JPanel();
+		jPanel2.setBounds(0, 170, 300, 40);
+		add(jPanel2, BorderLayout.SOUTH);
 		
 		//저장/취소버튼
 		btnSave = new JButton("저장");
 		btnCancel = new JButton("취소");
-		btnSave.setSize(60, 30);
-		btnCancel.setSize(60, 30);
+		btnSave.setSize(40, 30);
+		btnCancel.setSize(40, 30);
 		
 		//이벤트리스너등록
 		MyActionListener listener = new MyActionListener();
 		btnSave.addActionListener(listener);
 		btnCancel.addActionListener(listener);
+		btnOpen.addActionListener(listener);
 		
-		getContentPane().add(btnSave);
-		getContentPane().add(btnCancel);
+		jPanel2.add(btnSave);
+		jPanel2.add(btnCancel);
+		
 		setVisible(true); 
-		pack(); 
 	} 
+	
 	public void dragEnter(DropTargetDragEvent arg0) {} 
 	public void dragOver(DropTargetDragEvent arg0) {} 
 	public void dropActionChanged(DropTargetDragEvent arg0) {} 
 	public void dragExit(DropTargetEvent arg0) {} 
 	@SuppressWarnings("unchecked") 
+	//드래그로 곡 추가
 	public void drop(DropTargetDropEvent evt) { 
 		int action = evt.getDropAction(); 
 		evt.acceptDrop(action); 
 		try { 
 			Transferable data = evt.getTransferable(); 
 			if (data.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) { 
-				files = (List<File>) data.getTransferData(DataFlavor.javaFileListFlavor); 
+				List<File> files = (List<File>) data.getTransferData(DataFlavor.javaFileListFlavor); 			
 				for (File file : files) { 
-					listModel.addElement(file); 
+					if(!checkConflict(file)){
+						mList.add(file);
+						listModel.addElement(file); 
+					}
 				} 
 			} 
 		} catch (UnsupportedFlavorException e) { 
@@ -150,17 +173,50 @@ public class MusicManagerView extends JFrame implements DropTargetListener{
 			return files; 
 		} 
 	} 
+	//같은 곡이 이미 추가되어 있는지 확인 
+	public static boolean checkConflict(File file){
+		if(mList.contains(file)){
+			return true;
+		}
+		return false;
+	}
+	//파일 열기로 곡 추가
+	public void fileOpen(){
+		fileChooser.setMultiSelectionEnabled(true);
+		if(fileChooser.showOpenDialog(MusicManagerView.this)==JFileChooser.APPROVE_OPTION){
+			File[] tempFiles = fileChooser.getSelectedFiles();
+			for(File file : tempFiles){
+				if(!checkConflict(file)){
+					mList.add(file);
+					listModel.addElement(file); 
+				}
+				else{
+					System.out.println("Already existing file");
+				}
+			}
+		}
+	}
+	
 	private class MyActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			//저장을 눌렀을 때 관리자의 메소드를 불러와서 음악 추가
 			if(e.getSource() == btnSave){
-				for (File file : files) { 
-					admin.addMusic(file);
+				System.out.println("저장될 파일:"+mList);
+				for (File file : mList) { 
+					MusicM.addMusic(file);
 				}
-			}
-			else if(e.getSource() == btnCancel)
 				setVisible(false);
-			
-		}
+			}
+			//취소를 눌렀을 때 화면 없어짐
+			else if(e.getSource() == btnCancel){
+				setVisible(false);
+			}
+			//열기를 눌렀을 때 파일 추가
+			else if(e.getSource()== btnOpen){
+				fileOpen();
+			}			
+		}		
 	}
+	
 }
