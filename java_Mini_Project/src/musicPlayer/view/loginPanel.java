@@ -1,6 +1,5 @@
 package musicPlayer.view;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -73,8 +72,8 @@ public class loginPanel extends JPanel{
 				if(m.getId().equals("admin")) {
 					//패널변경
 //					//this는 MouseAdapter클래스를 가리키기 때문에 MainPanel.this를 해줘야 함.
-					MyUtil.changePanel(f, loginPanel.this, new AdminPanel(f,m));
-					new MusicManagerView();
+					MyUtil.changePanel(f, loginPanel.this, new AdminPanel(f));
+					new MusicAddFrame();
 				}
 				else {
 					setVisible(false);

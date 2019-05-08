@@ -11,13 +11,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import musicPlayer.controller.LoginSignController;
+import musicPlayer.controller.MemberManager;
 
 public class SignView {
 	private LoginSignController lsc;
 	private JTextField textId; //입력id값
 
-	public SignView() {
-		lsc=new LoginSignController();
+	public SignView(MemberManager memberM) {
+		lsc=new LoginSignController(memberM);
 		JFrame sign=new JFrame();
 		sign.setSize(300, 300);
 		sign.setLocationRelativeTo(null);

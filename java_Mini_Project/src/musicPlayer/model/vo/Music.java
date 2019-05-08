@@ -1,5 +1,6 @@
 package musicPlayer.model.vo;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 public class Music implements Serializable{
@@ -11,7 +12,8 @@ public class Music implements Serializable{
 	private String openYear; //발매년도
 	private int like; //좋아요수
 	private int seconds; //재생시간(분)
-//	private String image; //사진 이미지
+	private String imageName; //사진 이미지
+	private InputStream image; //사진 이미지
 	
 	public Music() {
 		
@@ -97,6 +99,22 @@ public class Music implements Serializable{
 
 	public void setCode(long code) {
 		this.code = code;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+
+	public InputStream getImage() {
+		return image;
+	}
+
+	public void setImage(InputStream image) {
+		this.image = image;
 	}
 	
 }

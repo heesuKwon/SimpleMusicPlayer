@@ -1,10 +1,7 @@
 package musicPlayer.view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,21 +18,21 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import musicPlayer.common.MyUtil;
 import musicPlayer.controller.IOController;
 import musicPlayer.controller.LoginSignController;
-import musicPlayer.controller.PlayerController;
-import musicPlayer.model.vo.Administrator;
+import musicPlayer.controller.MemberManager;
+import musicPlayer.controller.MusicManager;
 import musicPlayer.model.vo.Member;
 import musicPlayer.model.vo.Music;
 
 
 public class MainViewFrame{
-	private PlayerController pc;
+	private MemberManager MemberM = new MemberManager();
+	private MusicManager MusicM = new MusicManager();
 	private IOController mc = new IOController();
 	private LoginSignController lsc;
 	private Member m; //로그인한 회원
-	private Administrator admin = new Administrator();
+//	private Administrator admin = new Administrator();
 		
 	private JTable chartTable;//차트 테이블
 	private int like=0;//좋아요 수 저장 변수
@@ -58,8 +55,8 @@ public class MainViewFrame{
 	private JButton btnJoinM;
 	private JButton btnLogout;
 
-	public MainViewFrame(PlayerController pc) {	
-		this.pc = pc;
+	public MainViewFrame(MemberManager MemberM) {	
+		this.MemberM = MemberM;
 
 		configureFrame();//프레임설정(size, location, title등)
 //		addRootPanel();
@@ -158,7 +155,7 @@ public class MainViewFrame{
 
 	//음악 차트 패널
 	public void addChartPanel() {
-		allMusic = admin.getAllMusic();
+		allMusic = MusicM.getAllMusic();
 		chartPanel = new MyPanel(0, 0, 300, 500, null, Color.black, Color.WHITE);
 		//JTable 컬럼 저장
 		String[] columns= {"곡명","가수","장르","재생시간","좋아요"," "};
@@ -251,6 +248,7 @@ public class MainViewFrame{
 		f.add(memberPanel);
 	}
 }
+/*
 //JTable에 JButton 넣는 기능 클래스
 class JTableButtonRenderer implements TableCellRenderer {        
 	@Override 
@@ -268,3 +266,4 @@ class descendingByLike implements Comparator<Music>{
 	}
 
 }
+*/
