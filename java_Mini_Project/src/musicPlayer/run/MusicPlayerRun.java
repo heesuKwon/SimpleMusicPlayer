@@ -6,7 +6,7 @@ import musicPlayer.view.MainViewFrame2;
 public class MusicPlayerRun {
 
 	public static void main(String[] args) {
-		new MainViewFrame2(new MemberManager());
+		new MainViewFrame2();
 	}
 
 }

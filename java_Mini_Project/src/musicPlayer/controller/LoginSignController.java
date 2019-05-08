@@ -1,6 +1,7 @@
 package musicPlayer.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -9,15 +10,16 @@ import musicPlayer.model.vo.Member;
 
 public class LoginSignController {
 	private List<Member> MemberList = new ArrayList<>();
-	private MemberManager mm = new MemberManager();
+	private MemberManager memberM;
 
 	private boolean loginOk=false;//로그인ok 
 	private boolean signOk=false;//회원가입 가능여부 최종확인
 	private boolean idCheck=false;//아이디중복체크
 	private String id="";//중복확인 후 id값
 	
-	public LoginSignController(){
-		MemberList = mm.getMemberList();
+	public LoginSignController(MemberManager memberM){
+		this.memberM = memberM;
+		MemberList = memberM.getMemberList();
 	}
 
 
@@ -100,7 +102,7 @@ public class LoginSignController {
 		}		
 		if(signOk==true) {
 			//회원정보 저장
-			mm.addMember(textName, textId, textPwd);
+			memberM.addMember(textName, textId, textPwd);
 			JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다");
 			check=false;
 		}else {

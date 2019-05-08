@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,18 +34,19 @@ import musicPlayer.model.vo.Music;
 
 
 public class MainViewFrame2{
-	private MemberManager MemberM = new MemberManager();
-	private MusicManager MusicM = new MusicManager();
+	private MemberManager memberM = new MemberManager(); //멤버매니저는 한번만 생성
+	private MusicManager musicM = new MusicManager();
 	private IOController mc = new IOController();
 	private LoginSignController lsc;
 	private Member member; //로그인한 회원
 	private PlayListByMemberManager playList;
-	private HashSet<String> likeCheck=new HashSet<String>(); //좋아요 클릭 여부 HashSet
+	
 //	private Music music; //플레이리스트에 추가할 노래	
 	private boolean boolLogin = false;
 	private JTable chartTable;//차트 테이블
 	private int like=0;//좋아요 수 저장 변수
 	private List<Music> allMusic = new ArrayList<>(); //모든 음악 저장 리스트
+	private List<Member> memberList = new ArrayList<>();
 	
 
 	//컨테이너모음
@@ -63,8 +65,7 @@ public class MainViewFrame2{
 	private JButton btnJoinM;
 	private JButton btnLogout;
 
-	public MainViewFrame2(MemberManager MemberM) {	
-		this.MemberM = MemberM;
+	public MainViewFrame2() {	
 
 		configureFrame();//프레임설정(size, location, title등)
 		addRootPanel();
@@ -91,7 +92,7 @@ public class MainViewFrame2{
 
 	private void addLoginPanel() {
 
-		loginPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);
+		loginPanel = new MyPanel(500, 0, 400, 500, null, Color.black, Color.white);
 		loginPanel.setLayout(null);
 
 		JLabel id = new JLabel("ID: ",JLabel.RIGHT);
@@ -129,9 +130,9 @@ public class MainViewFrame2{
 	private class LoginActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			lsc=new LoginSignController();
 			//로그인 버튼 클릭시
 			if(e.getSource() == btnLogin) {		
+				lsc=new LoginSignController(memberM);
 				member = lsc.loginCheck(textFieldId.getText(),new String(pwFieldPassword.getPassword()).toString());
 				if(member.getId().equals("admin")) {
 					//패널변경
@@ -150,15 +151,19 @@ public class MainViewFrame2{
 			}
 			//회원가입 버튼 클릭시
 			else if(e.getSource() == btnJoinM) {
-				new SignView();
+				new SignView(memberM);
 			}
 		}
 	}
 
 	//음악 차트 패널
     public void addChartPanel() {
-        allMusic = MusicM.getAllMusic();
-        chartPanel = new MyPanel(0, 0, 300, 500, null, Color.black, Color.WHITE);
+        allMusic = musicM.getAllMusic();
+        chartPanel = new MyPanel(0, 0, 500, 500, null, Color.black, Color.WHITE);
+        
+        JLabel play = new JLabel("인기 차트");
+        chartPanel.add(play);
+        
         //JTable 컬럼 저장
         String[] columns= {"곡명","가수","재생","좋아요"," "};
         //JTable 데이터 저장
@@ -202,30 +207,43 @@ public class MainViewFrame2{
         chartTable.getColumn(" ").setCellRenderer(buttonRenderer);
         chartTable.getColumn("재생").setCellRenderer(buttonRenderer);
         //JTable 크기 조절 기능
-        chartTable.setPreferredScrollableViewportSize(new Dimension(300,500));
+        chartTable.setPreferredScrollableViewportSize(new Dimension(500,500));
         //JTable 스크롤 기능
         JScrollPane scr=new JScrollPane(chartTable);
+        
         chartPanel.add(scr);
         rootPanel.add(chartPanel);
     }
 	
-	//좋아요 클릭 기능 + 좋아요 순서 내림차순 기능 + 좋아요 1번만 클릭가능 기능
-    public void like(int row, int column) {        
-        //클릭한 노래의 like 수 저장            
-        Music m = allMusic.get(row);        
+  //좋아요 클릭 기능 + 좋아요 순서 내림차순 기능 + 좋아요 1번만 클릭가능 기능
+    public void like(int row, int column) {
+        //클릭한 노래의 like 수 저장
+        Music m = allMusic.get(row);
+        HashSet<Long> likeCheck=new HashSet<Long>(); //좋아요 클릭 여부 HashSet
+        likeCheck = member.getLikeCheck();
         //좋아요 클릭한 곡 확인 if문
-        System.out.println(allMusic.get(row).getLike());
-        if(likeCheck.add(m.getTitle())==true) {
-            like = m.getLike();            
+        if(likeCheck.add(m.getCode())) {
+        	member.setLikeCheck(likeCheck);
+            like = m.getLike();
             allMusic.set(row, new Music(m.getPath(), m.getCode(), m.getTitle(), m.getArtist(),
                     m.getGenre(), m.getOpenYear(), ++like, m.getSeconds()));
             chartPanel.setVisible(false);
             //내림차순 기능
             Comparator<Music> comp=new descendingByLike();
             Collections.sort(allMusic, comp);
-
-            MusicM.setAllMusic(allMusic);
+            musicM.setAllMusic(allMusic);
+            //곡 좋아요 클릭했을때 member에 저장
             
+            memberList=memberM.getMemberList();
+            for(int i=0;i<memberList.size();i++) {
+            	Member mem = memberList.get(i);
+                if(mem.getId().equals(member.getId())) {
+//                	System.out.println("like 누른 후 "+member);
+                	
+                    memberList.set(i, member);
+                }
+            }
+            memberM.setAllMember(memberList);
             addChartPanel();
         }else {
             JOptionPane.showMessageDialog(null, "좋아요 한번만 클릭 가능");
@@ -234,7 +252,7 @@ public class MainViewFrame2{
 
 	//관리자 페이지 패널
 	private void addAdminPanel() {
-		adminPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);		
+		adminPanel = new MyPanel(500, 0, 400, 500, null, Color.black, Color.white);		
 		JLabel idLabel=new JLabel();
 		idLabel.setText(member.getName()+"님 환영합니다.");	
 		adminPanel.add(idLabel);
@@ -266,7 +284,7 @@ public class MainViewFrame2{
 		btnManageMember.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new MemberManagerView(MemberM.getMemberList());
+				new MemberManagerView(memberM.getMemberList());
 			}
 		});
 		adminPanel.add(btnManageMember);
@@ -275,7 +293,7 @@ public class MainViewFrame2{
 	}
 	//회원 페이지 패널
 	private void addMemberPanel() {
-		memberPanel = new MyPanel(300, 0, 300, 500, null, Color.black, Color.white);		
+		memberPanel = new MyPanel(500, 0, 400, 500, null, Color.black, Color.white);		
 		JLabel idLabel=new JLabel();
 		idLabel.setText(member.getName()+"님 환영합니다.");	
 		memberPanel.add(idLabel);

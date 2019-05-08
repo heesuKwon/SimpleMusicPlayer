@@ -22,7 +22,7 @@ public class MusicManager {
 		allMusicList = (List)ioc.loadList("Musics");
 		//음악 파일이 비어있지 않으면
 		if(allMusicList != null){
-			System.out.println(allMusicList.size());
+//			System.out.println(allMusicList.size());
 			code = allMusicList.size();
 		}
 		//음악 파일이 비어있으면
@@ -53,9 +53,10 @@ public class MusicManager {
 			//public Music(String path, long code, String title, String artist, String genre, String openYear, int like, int seconds);
 			Music music = new Music(f.toString(), code++, title, artist, genre, year, 0, seconds);
 			if(!allMusicList.contains(music)){//같으면 안들어가게 하고 싶은데... 코드번호가 달라서 인지 상관없이 들어감...ㅠ
+				//path로 Music 객체 equals overriding 하면 될거같은데.....
 				allMusicList.add(music);
 			}
-			System.out.println(music);
+			System.out.println("추가한 곡"+music);
 
 			ioc.saveList(allMusicList, "Musics");
 
@@ -68,9 +69,9 @@ public class MusicManager {
 			//	            System.out.println("Seconds : "+seconds);
 			//	            System.out.println("minute : "+minute); //4 ->실제 길이 4:23
 			//	            System.out.println("second : "+second); //23 ->실제 길이 4:23
-//				            System.out.println("image : "+image);
-//			String[] str = image.split(":");
-//			System.out.println(str[0]);
+				            System.out.println("image : "+image);
+			String[] str = image.split(":");
+			System.out.println(str[0]);
 
 		}catch(Exception ex){
 			ex.printStackTrace();
