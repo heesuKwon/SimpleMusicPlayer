@@ -1,9 +1,13 @@
 package musicPlayer.model.vo;
 
 import java.io.Serializable;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+=======
+import java.util.HashSet;
+>>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 
 public class Member implements Serializable{
 	private String name;

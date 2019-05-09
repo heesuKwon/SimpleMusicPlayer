@@ -16,6 +16,7 @@ public class PlayListByMemberManager {
 	List<Music> playList;
 	
 	public PlayListByMemberManager(String id) {
+<<<<<<< HEAD
 		MemberMusicMap = (Map)ioc.loadMap("MemberMusicMap");
 		//음악 파일이 비어있으면
 		if(MemberMusicMap == null){
@@ -34,6 +35,31 @@ public class PlayListByMemberManager {
 	public void addPlayList(Music m) {
 		playList.add(m);
 		setMemberMusicMap();
+=======
+		System.out.println("PlayListByMemberManager 객체 생성");
+		MemberMusicMap = (Map)ioc.loadMap("MemberMusicMap");
+		//음악 파일이 비어있으면
+		if(MemberMusicMap == null){
+			MemberMusicMap = new HashMap<>();
+		}
+		//map의 key값 중 id가 있으면 (회원의 플레이리스트가 존재하면)
+		if(MemberMusicMap.containsKey(id)) {
+			playList = MemberMusicMap.get(id);
+		}
+		else {
+			playList = new ArrayList<>();		
+		}
+		this.id = id;
+	}
+	
+	public void addPlayList(Music m) {
+		playList.add(m);
+		setMemberMusicMap();
+	}
+	
+	public List<Music> getPlayList(){
+		return playList;
+>>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 	}
 	
 	public void setMemberMusicMap() {

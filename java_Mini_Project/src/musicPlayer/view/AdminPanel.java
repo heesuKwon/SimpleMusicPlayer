@@ -5,8 +5,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+<<<<<<< HEAD
 import musicPlayer.model.vo.Member;
 
+=======
+>>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 public class AdminPanel extends JPanel{
 	private JFrame f;
 	

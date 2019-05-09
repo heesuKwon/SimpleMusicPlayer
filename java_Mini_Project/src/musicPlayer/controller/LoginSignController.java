@@ -1,7 +1,10 @@
 package musicPlayer.controller;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.HashSet;
+=======
+>>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 import java.util.List;
 
 import javax.swing.JOptionPane;

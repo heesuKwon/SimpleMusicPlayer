@@ -13,8 +13,13 @@ public class MemberManager {
 	private HashSet<Long> likeCheck = new HashSet<>(); 
 	
 	public MemberManager(){
+<<<<<<< HEAD
 		MemberList = (List)ioc.loadList("Members");
 		System.out.println("객체 생성");
+=======
+		System.out.println("MemberManager 객체 생성");
+		MemberList = (List)ioc.loadList("Members");
+>>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 		//음악 파일이 비어있으면
 		if(MemberList == null){
 			MemberList = new ArrayList<>();

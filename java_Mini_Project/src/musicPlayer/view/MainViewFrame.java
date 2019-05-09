@@ -1,6 +1,7 @@
 package musicPlayer.view;
 
 import java.awt.Color;
+<<<<<<< HEAD
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,29 @@ import musicPlayer.controller.LoginSignController;
 import musicPlayer.controller.MemberManager;
 import musicPlayer.controller.MusicManager;
 import musicPlayer.model.vo.Administrator;
+=======
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
+import musicPlayer.controller.IOController;
+import musicPlayer.controller.LoginSignController;
+import musicPlayer.controller.MemberManager;
+import musicPlayer.controller.MusicManager;
+>>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 import musicPlayer.model.vo.Member;
 import musicPlayer.model.vo.Music;
 
