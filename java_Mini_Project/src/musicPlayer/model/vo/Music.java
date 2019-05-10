@@ -9,7 +9,7 @@ public class Music implements Serializable{
 	private String Title; //곡명
 	private String artist; //가수
 	private String genre; //장르
-	private String openYear; //발매년도
+	private int openYear; //발매년도
 	private int like; //좋아요수
 	private int seconds; //재생시간(분)
 	private String imageName; //사진 이미지
@@ -19,7 +19,7 @@ public class Music implements Serializable{
 		
 	}
 
-	public Music(String path, long code, String title, String artist, String genre, String openYear, int like, int seconds) {
+	public Music(String path, long code, String title, String artist, String genre, int openYear, int like, int seconds) {
 		this.path = path;
 		this.code = code;
 		this.Title = title;
@@ -61,11 +61,11 @@ public class Music implements Serializable{
 		this.genre = genre;
 	}
 
-	public String getOpenYear() {
+	public int getOpenYear() {
 		return openYear;
 	}
 
-	public void setOpenYear(String openYear) {
+	public void setOpenYear(int openYear) {
 		this.openYear = openYear;
 	}
 
@@ -115,6 +115,31 @@ public class Music implements Serializable{
 
 	public void setImage(InputStream image) {
 		this.image = image;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Music other = (Music) obj;
+		if (path == null) {
+			if (other.path != null)
+				return false;
+		} else if (!path.equals(other.path))
+			return false;
+		return true;
 	}
 	
 }

@@ -1,14 +1,12 @@
 package musicPlayer.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,12 +19,11 @@ import javax.swing.event.ListSelectionListener;
 
 import musicPlayer.controller.MusicManager;
 import musicPlayer.model.vo.Music;
-import musicPlayer.view.PlayListView.MyListSelectionListener;
 
 public class MusicRemoveFrame extends JFrame{
 	
 	private MusicManager musicM;
-	private MainViewFrame2 mainView;
+	private MainViewFrame mainView;
 	
 	private DefaultListModel<Music> listModel = new DefaultListModel<>(); 
 	
@@ -39,13 +36,13 @@ public class MusicRemoveFrame extends JFrame{
 	private JButton btnCancel; //취소버튼
 	
 	private static List<Music> musicList; //음악 리스트
-	private static List<Music> removeList = new ArrayList<Music>(); //삭제할 리스트
+	private static Set<Music> removeSet = new HashSet<Music>(); //삭제할 리스트(한번 클릭했을 때 액션 리스너가 2번 반응해서 set으로 만들어줌)
 	
-	public MusicRemoveFrame(MusicManager musicM, MainViewFrame2 mainView){
+	public MusicRemoveFrame(MusicManager musicM, MainViewFrame mainView){
 		this.mainView = mainView;
 		this.musicM = musicM;
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		initComponents(); 
 		list.setModel(listModel);
@@ -75,7 +72,7 @@ public class MusicRemoveFrame extends JFrame{
 		jScrollPane1.setViewportView(list); 		
 		add(jScrollPane1, BorderLayout.CENTER);
 		list.addListSelectionListener(new MyListSelectionListener());
-		list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+//		list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 		
 		//아래패널
 		jPanel2 = new JPanel();
@@ -90,7 +87,7 @@ public class MusicRemoveFrame extends JFrame{
 		
 		//이벤트리스너등록
 		MyActionListener listener = new MyActionListener();
-		btnRemove.addActionListener(new MyActionListener());
+		btnRemove.addActionListener(listener);
 		btnCancel.addActionListener(listener);
 		
 		jPanel2.add(btnRemove);
@@ -104,11 +101,11 @@ public class MusicRemoveFrame extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			//저장을 눌렀을 때 관리자의 메소드를 불러와서 음악 추가
 			if(e.getSource() == btnRemove){
-				System.out.println("삭제될 파일:"+removeList);
-				for (Music m : removeList) { 
+				System.out.println("삭제될 파일:"+removeSet);
+				for (Music m : removeSet) { 
 					musicM.removeMusic(m);
 				}
-				removeList.clear();
+				removeSet.clear();
 				mainView.chartPanel.setVisible(false);
 				mainView.addChartPanel();
 				setVisible(false);
@@ -125,8 +122,9 @@ public class MusicRemoveFrame extends JFrame{
 		public void valueChanged(ListSelectionEvent e) {
 			int[] indexs = list.getSelectedIndices();
 			for(int i=0;i<indexs.length;i++){
-				System.out.println(indexs);
-				removeList.add(musicList.get(indexs[i]));
+				System.out.println(indexs.length);
+				System.out.println(i+" : "+indexs[i]);
+				removeSet.add(musicList.get(indexs[i]));
 			}
 		}
 	}

@@ -5,73 +5,66 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import musicPlayer.model.vo.Music;
-
 public class MusicSearch extends JFrame{
-Scanner sc = new Scanner(System.in);
+	private MainViewFrame mainView;
 	
+	//MusicManager 클래스에서 가져옴
+	private List<Music> allMusic;
+	private List<Music> playList;
+	private HashSet<Music> searchMusic=new HashSet<Music>();
+	
+	//컴포넌트 추가
+	private JPanel panel6;
 	private JTextField textFieldTitle;
 	private JTextField textFieldArtist;
-
-	//Music 클래스에서 가져옴
-	private List<Music> mList = new ArrayList<>();
+	private JCheckBox[] chkYear;
+	private JCheckBox[] chkGenre;
+	private JButton btnSearch;
 	
-	//{"파일경로", 고유번호, "곡명", "가수", "장르", "발매년도", 좋아요수, 재생시간(초)}
-	{
-		mList.add(new Music("", 1, "Kill This Love", "BLACKPINK(블랙핑크)", "K-Pop", "", 0, 193));
-		mList.add(new Music("", 2, "Bom(나만,봄)", "BOL4(볼빨간사춘기)", "K-Pop", "", 0, 222));
-		mList.add(new Music("", 3, "사계(Four Seasons)", "Taeyeon(태현)", "K-Pop", "", 0, 210));
-		mList.add(new Music("", 4, "FANCY", "TWICE", "K-Pop", "", 0, 218));
-	}//필드 생성
+	private boolean flag = true;
 	
-	//데이터
-	Object[][] data = {
-			{"", 1, "Kill This Love", "BLACKPINK(블랙핑크)", "K-Pop", "", 0, 193},
-			{"", 2, "Bom(나만,봄)", "BOL4(볼빨간사춘기)", "K-Pop", "", 0, 222},
-			{"", 3, "사계(Four Seasons)", "Taeyeon(태현)", "K-Pop", "", 0, 210},
-			{"", 4, "FANCY", "TWICE", "K-Pop", "", 0, 218}
-	};
-
-	private JPanel panel6;
-
-	private List<Music> searchMusic;
-	
-	public MusicSearch() {
+	public MusicSearch(List<Music> allMusic, List<Music> playList, MainViewFrame mainView) {
+		this.playList = playList;
+		this.allMusic = allMusic;
+		this.mainView = mainView;
+		if(playList == null){
+			flag = false;
+		}
+		
 		configureFrame();//프레임설정(size, location, title등)
 		addPanel1();//곡명, 가수
-//		addPanel2();//가수
 		addPanel3();//장르 체크박스
 		addPanel4();//발매년도
 		addPanel5();//총체 검색버튼
-//		addPanel6();//곡 검색결과
+		addPanel6(searchMusic);//곡 검색결과
 		
-		//시각화여부 true
-		//컴포넌트(component)추가 후 마지막에 실행할 것.
 		setVisible(true);
 	}//end of MusicSearch 생성자
 	
 	private void configureFrame() {
 		//프레임 상단에 이름설정
 		setTitle("음악검색");
-		setBounds(400, 100, 500, 500);
+		setBounds(400, 100, 500, 600);
 		setResizable(false);
 		//닫기버튼 -> 프로그램 종료
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		dispose();
 		getContentPane().setBackground(Color.GRAY);
 		//레이아웃 매니저 설정
 		setLayout(null);
@@ -93,6 +86,8 @@ Scanner sc = new Scanner(System.in);
 	//곡명, 가수명
 	private void addPanel1() {
 		JPanel panel1 = new JPanel();
+		panel1.setBounds(10, 55, 480, 40);
+		panel1.setBackground(Color.white);
 		//곡명 TextField 추가
 		JLabel title = new JLabel("곡명 : ", JLabel.RIGHT);
 		textFieldTitle = new JTextField(6);
@@ -129,24 +124,16 @@ Scanner sc = new Scanner(System.in);
 		TitledBorder titleBorder3 = new TitledBorder(new LineBorder(Color.BLACK), "장르별 검색 (다중선택 가능)");
 		panel3.setBorder(titleBorder3);
 		
-		JCheckBox chkBallad = new JCheckBox("발라드", false);
-		JCheckBox chkTrot = new JCheckBox("트로트", false);
-		JCheckBox chkKPop = new JCheckBox("K-Pop", false);
-		JCheckBox chkRock = new JCheckBox("Rock", false);
-		JCheckBox chkDance = new JCheckBox("Dance", false);
-		
-		//체크박스 기본 백그라운드 컬러: LightGray => White
-		chkBallad.setBackground(Color.white);
-		chkTrot.setBackground(Color.white);
-		chkKPop.setBackground(Color.white);
-		chkRock.setBackground(Color.white);
-		chkDance.setBackground(Color.white);
-		
-		panel3.add(chkBallad);
-		panel3.add(chkTrot);
-		panel3.add(chkKPop);
-		panel3.add(chkRock);
-		panel3.add(chkDance);
+		String[] chk = new String[] {"발라드", "인디뮤직", "J-Pop","Rock","Dance"};
+        //JCheckBox배열
+        chkGenre = new JCheckBox[chk.length];
+        
+        for(int i=0; i<chk.length; i++) {
+        	chkGenre[i] = new JCheckBox(chk[i]);
+        	chkGenre[i].setBackground(Color.white);
+            panel3.add(chkGenre[i]);
+//          
+        }
 		
 		add(panel3);
 	}//end of addPanel3
@@ -155,24 +142,33 @@ Scanner sc = new Scanner(System.in);
 	private void addPanel4() {
 		//발매년도별 체크박스
 		JPanel panel4 = new JPanel();
-		panel4.setBounds(10, 190, 480, 70);
+		panel4.setBounds(10, 175, 480, 70);
 		panel4.setBackground(Color.white);
 		
 		TitledBorder titleBorder4 = new TitledBorder(new LineBorder(Color.BLACK), "발매년도별 검색 (다중선택 가능)");
 		panel4.setBorder(titleBorder4);
 		
-		JCheckBox chk1990 = new JCheckBox("1990~1999", false);
-		JCheckBox chk2000 = new JCheckBox("2000~2009", false);
-		JCheckBox chk2010 = new JCheckBox("2010~2019", false);
+		String[] chk = new String[] {"1990~1999", "2000~2009", "2010~2019"};
+        //JCheckBox배열
+        chkYear = new JCheckBox[chk.length];
+        
+        for(int i=0; i<chkYear.length; i++) {
+            chkYear[i] = new JCheckBox(chk[i]);
+            chkYear[i].setBackground(Color.white);
+            panel4.add(chkYear[i]);
+//            chk_[i].addActionListener(new MyActionListener());
+        }
+		
+//		chk1990 = new JCheckBox("1990~1999", false);
+//		chk2000 = new JCheckBox("2000~2009", false);
+//		chk2010 = new JCheckBox("2010~2019", false);
 		
 		//체크박스 기본 백그라운드 컬러: LightGray => White
-		chk1990.setBackground(Color.white);
-		chk2000.setBackground(Color.white);
-		chk2010.setBackground(Color.white);
 		
-		panel4.add(chk1990);
-		panel4.add(chk2000);
-		panel4.add(chk2010);
+		
+//		panel4.add(chk1990);
+//		panel4.add(chk2000);
+//		panel4.add(chk2010);
 		
 		add(panel4);
 	}//end of addPanel4
@@ -180,84 +176,88 @@ Scanner sc = new Scanner(System.in);
 	//총체 검색버튼
 	private void addPanel5() {
 		JPanel panel5 = new JPanel();
-		//검색버튼
-		JButton btnSearch = new JButton("검색");
+		panel5.setBounds(10, 250, 480, 40);
+		btnSearch = new JButton("검색");
 		btnSearch.setBounds(220, 265, 60, 30);
-		
 		panel5.add(btnSearch);
 		add(panel5);
 		
-		btnSearch.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//사용자가 입력한값 가져오기
-				String srch =  textFieldTitle.getText();
-				searchTitle(srch);
-				System.out.println(searchMusic);
-				addPanel6();
-			}//end of actionPerformed
-		});//end of addActionListener
+		
+		btnSearch.addActionListener(new MyActionListener());
 		setVisible(true);
 	}//end of addPanel5
 	
 	//곡 검색결과
-	private void addPanel6() {
+	private void addPanel6(HashSet<Music> searchMusic) {
 		panel6 = new JPanel();
-		panel6.setBounds(0, 300, 480, 150);
+		panel6.setBounds(10, 300, 480, 265);
 		panel6.setBackground(Color.white);
-		
-//		JLabel info = new JLabel("정보 : ");
+		JLabel info = new JLabel("정보 : ");
 //		info.setBounds(35, 255, 60, 50);
 //		info.setFont(new Font("Sans-serif", Font.BOLD, 15));
 		
 		//컬럼: String[]
-		String[] columns = {"곡명", "가수", "장르", "발매년도", "좋아요수", "재생시간(초)"};
+		String[] columns = {"곡명", "가수", "장르", "발매년도", "좋아요", "재생시간(초)"};
 
 		//행 데이터: Object[][]
 		Object[][] rowData = new Object[searchMusic.size()][columns.length];
 
-		for(int i=0; i<rowData.length; i++) {
-			Music m = searchMusic.get(i);
+//		for(int i=0; i<rowData.length; i++) {
+//			Music m = searchMusic.get(i);
+//			Object[] o = {m.getTitle(), m.getArtist(), m.getGenre(), m.getOpenYear(), m.getLike(), m.getSeconds()};
+//			rowData[i] = o;
+		
+		int index=0;
+		for(Music m:searchMusic) {
 			Object[] o = {m.getTitle(), m.getArtist(), m.getGenre(), m.getOpenYear(), m.getLike(), m.getSeconds()};
-			rowData[i] = o;
+			rowData[index] = o;
+			index++;
 		}//for
 
 		//JTable 생성
-		JTable musicInfo = new JTable(rowData, columns);
+		
+		//Jtable 내용 편집 안되도록 하는 기능
+        @SuppressWarnings("serial")
+        DefaultTableModel model=new DefaultTableModel(rowData, columns){                                
+            @Override
+            public boolean isCellEditable(int row,int column) {  
+            	//playList를 가지고 있지 않으면(비로그인시, 관리자로그인시)
+            	if(!flag){
+            		JOptionPane.showMessageDialog(null, "회원 로그인 후 플레이 리스트에 추가 가능합니다.");
+            	}
+            	else{
+            		mainView.playListM.addPlayList(playList.get(row));	      			
+            		mainView.playListView.setVisible(false);
+            		mainView.addPlayListPanel();
+            	}
+                return false;
+            }
+        };        
+        JTable musicInfo = new JTable(model);
+//        musicInfo.setBounds(0, 0, 480, 50);
+
+		//JTable columns width 조절 
+//		musicInfo.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		musicInfo.getColumnModel().getColumn(0).setPreferredWidth(150);
+		musicInfo.getColumnModel().getColumn(1).setPreferredWidth(60);
+		musicInfo.getColumnModel().getColumn(2).setPreferredWidth(60);
+		musicInfo.getColumnModel().getColumn(3).setPreferredWidth(60);
+		musicInfo.getColumnModel().getColumn(4).setPreferredWidth(60);
+		musicInfo.getColumnModel().getColumn(5).setPreferredWidth(60);
+		
 		//스크롤페인에 테이블 추가
 		JScrollPane scr = new JScrollPane(musicInfo);
-		//JTextArea
-		JTextArea textArea = new JTextArea(10, 30);
+		scr.setBounds(0,0,480, 100);
+//		JTextArea textArea = new JTextArea(10, 30);
 
 		//Panel에 추가
-		panel6.add(musicInfo);
-		panel6.add(scr);
-		panel6.add(textArea);
 //		panel6.add(info);	
+		panel6.add(scr);
+//		panel6.add(textArea);
 		add(panel6);
-	}//end of addPanel6
-	
-	/*
-	 * #############################################################################################
-	 */
-	
-	public void printList() {
-		System.out.println("=====================================================================");
-		System.out.println("곡명\t가수\t장르\t발매년도\t좋아요수\t재생시간(초)\t패스\t코드");
-		System.out.println("---------------------------------------------------------------------");
 		
-		for(Music m : mList) {
-			System.out.println(m.getTitle()+"\t"+
-							m.getArtist()+"\t"+
-							m.getGenre()+"\t"+
-							m.getOpenYear()+"\t"+
-							m.getLike()+"\t"+
-							m.getSeconds()+"\t"+
-							m.getPath()+"\t"+
-							m.getCode());
-		}//for
-		System.out.println("---------------------------------------------------------------------\n");
-	}//end of printList
+	}//end of addPanel6
+
 	
 	/**
 	 * 특정곡이 있는지 검사하는 메소드
@@ -265,218 +265,142 @@ Scanner sc = new Scanner(System.in);
 	 * 없다면, "검색결과가 없습니다" 출력
 	 */
 	public void searchTitle(String title) {
-		//찾는 곡이 존재하는지 여부를 담을 변수
-		boolean flag = false;
-		searchMusic = new ArrayList<>();
-		
-		//리스트 순회: 곡이 있다면, 곡 정보 출력
-		//없다면, 곡이 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당곡이 있을 경우 출력
-			if(mList.get(i).getTitle().equals(title)) {
-				flag = true;		
-				searchMusic.add(mList.get(i));
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 곡이 없습니다.");
-		}//if
-		
-//		//컬럼: String[]
-//		String[] columns = {"곡명", "가수", "장르", "발매년도", "좋아요수", "재생시간(초)"};
-//		
-//		//행 데이터: Object[][]
-//		Object[][] rowData = new Object[searchMusic.size()][columns.length];
-//		
-//		for(int i=0; i<rowData.length; i++) {
-//			Music m = searchMusic.get(i);
-//			Object[] o = {m.getTitle(), m.getArtist(), m.getGenre(), m.getOpenYear(), m.getLike(), m.getSeconds()};
-//			rowData[i] = o;
-//		}//for
-//		
-//		//JTable 생성
-//		JTable musicInfo = new JTable(rowData, columns);
-//		//스크롤페인에 테이블 추가
-//		JScrollPane scr = new JScrollPane(musicInfo);
-//		//JTextArea
-//		JTextArea textArea = new JTextArea(10, 30);
-//		
-//		//Panel에 추가
-//		panel6.add(musicInfo);
-//		panel6.add(scr);
-//		panel6.add(textArea);
-	}//end of searchTitle
-	
+		if(title.isEmpty()) {
+			return;
+		}
+		//allMusic의 곡 이름에 title이 포함되어있으면 searchMusic Set에 추가
+		for(Music m : allMusic) {
+			if(m.getTitle().contains(title)) {
+				searchMusic.add(m);
+			}
+		}
+	}	
 	//가수
 	public void searchArtist(String artist) {
-		//찾는 가수가 존재하는지 여부를 담을 변수
-		boolean flag = false;
+		if(artist.isEmpty()) {
+			return;
+		}
 		
-		//리스트 순회: 가수가 있다면, 곡 정보 출력
-		//없다면, 가수가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 가수가 있을 경우 출력
-			if(mList.get(i).getArtist().indexOf(artist) != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("가수명");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 가수가 없습니다.");
-		}//if
-	}//end of searchArtist
-	
+		//allMusic의 곡 아티스트에 artist가 포함되어있으면 searchMusic Set에 추가
+		for(Music m : allMusic) {
+			if(m.getTitle().contains(artist)) {
+				searchMusic.add(m);
+			}
+		}
+		
+	}
 	//장르
-	public void searchGenre(String genre) {
-		//찾는 장르가 존재하는지 여부를 담을 변수
-		boolean flag = false;
+	public void searchGenre(int i) {
+		for(Music m : allMusic) {
+			//만약에 발라드 이면
+			if(i==0) {
+				if(m.getGenre().equals("Ballad")) {
+					searchMusic.add(m);
+				}
+			}
+			//만약에 인디뮤직 이면
+			else if(i==1){
+				if(m.getGenre().equals("Indie Music")) {
+					searchMusic.add(m);
+				}
+			}
+			//만약에 J-Pop 이면
+			else if(i==2) {
+				if(m.getGenre().equals("J-Pop")) {
+					searchMusic.add(m);
+				}
+			//만약에 Rock 이면
+			}else if(i==3){
+				if(m.getGenre().equals("Rock")) {
+					searchMusic.add(m);
+				}
+			//만약에 Dance 이면
+			}else if(i==4){
+				if(m.getGenre().equals("Dance")) {
+					searchMusic.add(m);
+				}
+			}
+
+		}	
 		
-		//리스트 순회: 장르가 있다면, 곡 정보 출력
-		//없다면, 장르가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 장르가 있을 경우 출력
-			if(mList.get(i).getGenre().indexOf(genre) != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("___________장르");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 장르가 없습니다.");
-		}//if
+		
+		
 	}//end of searchGenre
 	
 	//발매년도
-	public void searchYear(String openYear) {
-		//찾는 발매년도가 존재하는지 여부를 담을 변수
-		boolean flag = false;
+	public void searchYear(int i) {
+		for(Music m : allMusic) {
+			//만약에 1990~1999년 이면
+			if(i==0) {
+				if(1990<=m.getOpenYear()&&m.getOpenYear()<=1999) {
+					searchMusic.add(m);
+				}
+			}
+			//만약에 2000~2009년 이면
+			else if(i==1){
+				if(2000<=m.getOpenYear()&&m.getOpenYear()<=2009) {
+					searchMusic.add(m);
+				}
+			}
+			//만약에 2010~2019년 이면
+			else if(i==2) {
+				if(2010<=m.getOpenYear()&&m.getOpenYear()<=2019) {
+					searchMusic.add(m);
+				}
+
+			}
+
+		}	
 		
-		//리스트 순회: 발매년도가 있다면, 곡 정보 출력
-		//없다면, 발매년도가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 발매년도가 있을 경우 출력
-			if(mList.get(i).getOpenYear().indexOf(openYear) != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("_______________발매년도");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 발매년도가 없습니다.");
-		}//if
-	}//end of searchYear
-	
-	//좋아요수
-	public void searchLike(int like) {
-		//찾는 좋아요수가 존재하는지 여부를 담을 변수
-		boolean flag = false;
 		
-		//리스트 순회: 좋아요수가 있다면, 곡 정보 출력
-		//없다면, 좋아요수가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 좋아요수가 있을 경우 출력
-			if(mList.get(i).getLike() != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("_________________좋아요수");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 좋아요수가 없습니다.");
-		}//if
-	}//end of searchLike
-	
-	//재생시간(초)
-	public void searchLength(int seconds) {
-		//찾는 재생시간(초)가 존재하는지 여부를 담을 변수
-		boolean flag = false;
+//		if(srchC.isEmpty()) {
+//			return;
+//		}
+//		
+//		//allMusic의 곡 아티스트에 artist가 포함되어있으면 searchMusic Set에 추가
+//		for(Music m : allMusic) {
+//			if(m.getTitle().contains(artist)) {
+//				searchMusic.add(m);
+//			}
+//		}
 		
-		//리스트 순회: 재생시간(초)가 있다면, 곡 정보 출력
-		//없다면, 재생시간(초)가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 재생시간(초)가 있을 경우 출력
-			if(mList.get(i).getLike() != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("______________________재생시간(초)");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 재생시간(초)가 없습니다.");
-		}//if
-	}//end of searchLength
 	
-	//파일경로(패스)
-	public void searchPath(String path) {
-		//찾는 패스가 존재하는지 여부를 담을 변수
-		boolean flag = false;
+	//end of searchYear
+	}
+	class MyActionListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {			
+			String srchT = textFieldTitle.getText();
+			searchTitle(srchT);
+			String srchA = textFieldArtist.getText();
+			searchArtist(srchA);
+
+			for(int i=0;i<chkYear.length;i++) {
+				if(chkYear[i].isSelected()) {
+					searchYear(i);
+				}
+			}			
+	
+			for(int i=0;i<chkGenre.length;i++) {
+				if(chkGenre[i].isSelected()) {
+					searchGenre(i);
+				}
+			}			
+			
+			if(searchMusic == null) {
+				JOptionPane.showMessageDialog(null, "검색한 곡이 없습니다.");
+			}
 		
-		//리스트 순회: 패스가 있다면, 곡 정보 출력
-		//없다면, 패스가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 패스가 있을 경우 출력
-			if(mList.get(i).getPath().indexOf(path) != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("________________________________패스");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 패스가 없습니다.");
-		}//if
-	}//end of searchPath
-	
-	//고유코드
-	public void searchCode(long code) {
-		//찾는 코드가 존재하는지 여부를 담을 변수
-		boolean flag = false;
+			panel6.setVisible(false);
+			addPanel6(searchMusic);
+			//set 리셋
+			
+			playList=new ArrayList<Music>(searchMusic);
+			searchMusic.removeAll(searchMusic);
+		}
 		
-		//리스트 순회: 코드가 있다면, 곡 정보 출력
-		//없다면, 코드가 없다고 피드백 주기
-		for(int i=0; i<mList.size(); i++) {
-			//해당 코드가 있을 경우 출력
-			if(mList.get(i).getCode() != -1) {
-				flag = true;
-				System.out.println("==================================================");
-				System.out.println("코드");
-				System.out.println("--------------------------------------------------");
-				System.out.println(mList.get(i));
-				System.out.println("---------------------------------------------------\n");
-			}//if
-		}//for
-		if(!flag) {
-			System.out.println("찾는 코드가 없습니다.");
-		}//if
-	}//end of searchCode
+	}
 	
-	public static void main(String[] args) {
-		MusicSearch ms = new MusicSearch();
-		ms.printList();
-//		ms.searchTitle("어머님께");//제목명으로 검색 메소드
-//		ms.searchArtist("G.O.D");//가수명으로 검색 메소드: 복수개의 결과가 나올 수 있음
-//		ms.searchGenre("K-Pop");//장르별로 검색 메소드
-//		ms.searchYear("1999");//발매년도
-//		ms.searchLike(0);//좋아요수
-//		ms.searchLength(0);//곡 재생시간(초)
-	}//end of main
 
 };//end of class

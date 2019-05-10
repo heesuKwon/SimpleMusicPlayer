@@ -7,12 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-<<<<<<< HEAD
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
-=======
->>>>>>> branch 'master' of https://github.com/heesuKwon/SimpleMusicPlayer.git
 
 import musicPlayer.model.vo.Member;
 

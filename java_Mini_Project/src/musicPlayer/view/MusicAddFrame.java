@@ -32,7 +32,7 @@ import musicPlayer.controller.MusicManager;
 public class MusicAddFrame extends JFrame implements DropTargetListener{
 
 	private MusicManager musicM;
-	private MainViewFrame2 mainView;
+	private MainViewFrame mainView;
 	
 	private static final long serialVersionUID = -361325089091244347L; 
 	private DefaultListModel<File> listModel = new DefaultListModel<>(); 
@@ -53,7 +53,7 @@ public class MusicAddFrame extends JFrame implements DropTargetListener{
 	private JButton btnOpen;//열기버튼
 	
 
-	public MusicAddFrame(MusicManager musicM, MainViewFrame2 mainView) {
+	public MusicAddFrame(MusicManager musicM, MainViewFrame mainView) {
 		this.mainView = mainView;
 		this.musicM = musicM;
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
